@@ -682,6 +682,15 @@ const BuilderPage = () => {
       .finally(() => setLoadingEdit(false));
   }, [id, isEdit, token]); // eslint-disable-line
 
+  // Restore last-previewed draft in create mode (e.g. after "Back to Builder")
+  useEffect(() => {
+    if (isEdit) return;
+    try {
+      const raw = sessionStorage.getItem("preview-data-v3");
+      if (raw) load(JSON.parse(raw));
+    } catch { }
+  }, [isEdit, load]);
+
   const handlePreview = () => {
     sessionStorage.setItem("preview-data-v3", JSON.stringify(form));
     window.open("/preview", "_blank");

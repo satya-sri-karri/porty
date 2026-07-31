@@ -17,7 +17,7 @@ const PreviewPage = () => {
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 20, textAlign: "center", padding: 40, background: "var(--surface-0)" }}>
         <span style={{ fontSize: 48, opacity: 0.3 }}>👁</span>
         <h2 style={{ fontWeight: 800 }}>No preview data found</h2>
-        <Link to="/" className="btn btn-primary" style={{ textDecoration: "none" }}>Go to Builder</Link>
+        <Link to="/builder" className="btn btn-primary" style={{ textDecoration: "none" }}>Go to Builder</Link>
       </div>
     );
   }
@@ -36,7 +36,7 @@ const PreviewPage = () => {
       }}>
         <span>👁 Preview — <em>{themeConfig.name}</em> theme</span>
         <div style={{ display: "flex", gap: 10 }}>
-          <Link to="/" style={{ color: "#fff", background: "rgba(255,255,255,0.15)", padding: "5px 12px", borderRadius: 6, textDecoration: "none", fontSize: 12 }}>
+          <Link to="/builder" style={{ color: "#fff", background: "rgba(255,255,255,0.15)", padding: "5px 12px", borderRadius: 6, textDecoration: "none", fontSize: 12 }}>
             ← Back to Builder
           </Link>
           <button onClick={() => window.close()}
