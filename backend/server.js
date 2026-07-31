@@ -52,6 +52,25 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// SMTP reachability diagnostic (temporary)
+app.get("/api/smtp-check", async (req, res) => {
+  const net = require("net");
+  const hosts = [
+    { host: "smtp.sendgrid.net", port: 587, label: "SendGrid" },
+    { host: "smtp-relay.brevo.com", port: 587, label: "Brevo" },
+    { host: "smtp.gmail.com", port: 587, label: "Gmail" },
+    { host: "smtp.gmail.com", port: 465, label: "Gmail-465" },
+  ];
+  const results = await Promise.all(hosts.map(h => new Promise(resolve => {
+    const sock = net.connect({ host: h.host, port: h.port, timeout: 6000 });
+    const done = ok => { try { sock.destroy(); } catch {} resolve({ label: h.label, host: h.host, port: h.port, ok }); };
+    sock.on("connect", () => done(true));
+    sock.on("timeout", () => done(false));
+    sock.on("error", () => done(false));
+  })));
+  res.json({ results });
+});
+
 // 404
 app.use((req, res) => res.status(404).json({ error: "Route not found" }));
 
