@@ -46,16 +46,17 @@ app.use("/api/ai", aiLimiter, require("./routes/ai"));
 app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
-    version: "3.0.0",
+    version: "3.1.0",
     message: "Portfolio Generator API v3",
     timestamp: new Date().toISOString(),
   });
 });
 
-// SMTP reachability diagnostic (temporary)
+// SMTP/HTTPS reachability diagnostic (temporary)
 app.get("/api/smtp-check", async (req, res) => {
   const net = require("net");
   const hosts = [
+    { host: "api.sendgrid.com", port: 443, label: "SendGrid-API(443)" },
     { host: "smtp.sendgrid.net", port: 587, label: "SendGrid" },
     { host: "smtp-relay.brevo.com", port: 587, label: "Brevo" },
     { host: "smtp.gmail.com", port: 587, label: "Gmail" },
