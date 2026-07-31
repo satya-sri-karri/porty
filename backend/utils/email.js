@@ -1,7 +1,9 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  port: Number(process.env.SMTP_PORT || 587),
+  secure: (process.env.SMTP_SECURE || "false") === "true",
   connectionTimeout: 15000,
   greetingTimeout: 15000,
   auth: {
