@@ -32,6 +32,7 @@ const sendOTP = async (email, otp) => {
     ]);
   } catch (err) {
     console.log("⚠ Email not sent (network may block SMTP). OTP for", email, ":", otp);
+    console.log("  SMTP error:", err.message);
   }
 };
 
