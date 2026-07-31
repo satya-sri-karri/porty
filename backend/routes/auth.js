@@ -32,7 +32,7 @@ router.post("/send-otp", async (req, res) => {
       await user.save();
     }
 
-    await sendOTP(email, otp);
+    sendOTP(email, otp);
     res.json({ success: true, message: "OTP sent to your email." });
   } catch (err) {
     console.error(err);
