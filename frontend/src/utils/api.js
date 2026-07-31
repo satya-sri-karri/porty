@@ -1,0 +1,23 @@
+const BASE = process.env.REACT_APP_API_URL || "/api";
+const req = async (method, url, body, token) => {
+  const h = { "Content-Type": "application/json" };
+  if (token) h["Authorization"] = `Bearer ${token}`;
+  const res = await fetch(`${BASE}${url}`, { method, headers: h, body: body ? JSON.stringify(body) : undefined });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Request failed");
+  return data;
+};
+export const sendOTP = (email, name) => req("POST", "/auth/send-otp", { email, name });
+export const verifyOTP = (email, otp, name, password) => req("POST", "/auth/verify-otp", { email, otp, name, password });
+export const loginUser = (email, password) => req("POST", "/auth/login", { email, password });
+export const getMe = t => req("GET", "/auth/me", null, t);
+export const createPortfolio = (b, t) => req("POST", "/portfolio", b, t);
+export const getMyPortfolios = t => req("GET", "/portfolio/my", null, t);
+export const getPortfolioById = (id, t) => req("GET", `/portfolio/${id}`, null, t);
+export const updatePortfolio = (id, b, t) => req("PUT", `/portfolio/${id}`, b, t);
+export const deletePortfolio = (id, t) => req("DELETE", `/portfolio/${id}`, null, t);
+export const getPublicPortfolio = slug => req("GET", `/portfolio/share/${slug}`);
+export const generateBio = (b, t) => req("POST", "/ai/bio", b, t);
+export const suggestSkills = (b, t) => req("POST", "/ai/skills", b, t);
+export const generateProjectDesc = (b, t) => req("POST", "/ai/project", b, t);
+export const recommendTheme = (b, t) => req("POST", "/ai/theme-recommend", b, t);
