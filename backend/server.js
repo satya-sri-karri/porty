@@ -52,6 +52,9 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// Minimal keep-alive ping (tiny response, cron-friendly)
+app.get("/api/ping", (req, res) => res.send("ok"));
+
 // SMTP/HTTPS reachability diagnostic (temporary)
 app.get("/api/smtp-check", async (req, res) => {
   const net = require("net");
