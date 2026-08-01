@@ -87,6 +87,9 @@ export const RegisterPage = () => {
               <div className="form-group">
                 <label className="form-label" style={{ color: "#fff" }}>One-Time Password</label>
                 <input className="form-input" style={{ ...inputGlassStyle, textAlign: "center", fontSize: 24, letterSpacing: 8 }} type="text" inputMode="numeric" maxLength={6} placeholder="000000" value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))} autoFocus />
+                <div className="form-hint" style={{ color: "rgba(255,255,255,0.45)", textAlign: "center", marginTop: 8, fontSize: 12.5 }}>
+                  A 6-digit code was sent to <strong style={{ color: "rgba(255,255,255,0.8)" }}>{email}</strong>. If you can't find it, check your <strong style={{ color: "rgba(255,255,255,0.8)" }}>Spam / Junk</strong> folder.
+                </div>
               </div>
               <div className="form-group">
                 <label className="form-label" style={{ color: "#fff" }}>Set Password</label>
