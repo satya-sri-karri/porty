@@ -4,7 +4,7 @@
  * Supports both CREATE and EDIT modes
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -77,6 +77,8 @@ const Toggle = ({ on, onChange, label }) => (
 const PersonalSection = ({ form, set, token }) => {
   const [bioLoading, setBioLoading] = useState(false);
   const [bioError, setBioError] = useState("");
+  const [avatarError, setAvatarError] = useState("");
+  const fileRef = useRef(null);
 
   const handleGenerateBio = async () => {
     if (!form.name) return setBioError("Add your name first.");
@@ -86,6 +88,37 @@ const PersonalSection = ({ form, set, token }) => {
       set("about", res.bio);
     } catch (e) { setBioError(e.message); }
     finally { setBioLoading(false); }
+  };
+
+  const handleAvatarFile = (file) => {
+    setAvatarError("");
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return setAvatarError("Please choose an image file.");
+    if (file.size > 5 * 1024 * 1024) return setAvatarError("Image must be under 5 MB.");
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const size = 512;
+          const canvas = document.createElement("canvas");
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext("2d");
+          ctx.fillStyle = "#fff";
+          ctx.fillRect(0, 0, size, size);
+          const min = Math.min(img.width, img.height);
+          ctx.drawImage(img, (img.width - min) / 2, (img.height - min) / 2, min, min, 0, 0, size, size);
+          set("avatarUrl", canvas.toDataURL("image/jpeg", 0.82));
+        } catch {
+          setAvatarError("Could not process that image. Try a different file.");
+        }
+      };
+      img.onerror = () => setAvatarError("Could not read that image. Try a different file.");
+      img.src = reader.result;
+    };
+    reader.onerror = () => setAvatarError("Could not read that file.");
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -111,6 +144,14 @@ const PersonalSection = ({ form, set, token }) => {
         <div className="form-group">
           <label className="form-label">Avatar URL</label>
           <input className="form-input" type="url" placeholder="https://github.com/user.png" value={form.avatarUrl} onChange={e => set("avatarUrl", e.target.value)} />
+          <div className="form-hint" style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 6 }}>
+            <span>or</span>
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => fileRef.current && fileRef.current.click()} style={{ padding: "4px 10px", cursor: "pointer" }}>
+              ⬆ Upload from file
+            </button>
+            <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }} onChange={e => { handleAvatarFile(e.target.files[0]); e.target.value = ""; }} />
+          </div>
+          {avatarError && <div className="form-error" style={{ marginTop: 4 }}>⚠ {avatarError}</div>}
         </div>
         <div className="form-group">
           <label className="form-label">Location</label>
