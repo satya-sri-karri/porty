@@ -15,9 +15,13 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ── Rate Limiting ─────────────────────────────────────────────────────────────
+const isHealthOrPing = req =>
+  req.originalUrl === "/api/health" || req.originalUrl === "/api/ping";
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  max: 300,
+  skip: isHealthOrPing,
   message: { error: "Too many requests. Please try again later." },
 });
 
